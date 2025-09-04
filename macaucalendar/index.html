@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macau Day Count</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>2025 在澳日數計算器</h1>
+            <div class="controls">
+                <button id="themeToggle">🌙 深色模式</button>
+                <button id="selectAll">選擇所有日期</button>
+                <button id="deselectAll">取消選擇所有日期</button>
+                </div>
+                <div class="controls">
+                <div class="counter">
+                    在澳總日數: <span id="selectedCount">0</span>
+                </div>
+                <div class="counter">
+                    還需多少日可獲現金分享： <span id="daysNeeded">183</span>
+                </div>
+                 
+            </div>
+            <div class="info">
+                <p>選擇日期以計算在澳的日數：</p>
+                <p>此計算器將幫助您追蹤在澳的日數，以便您能夠獲得明年(2026)的現金分享。</p>
+                <p>只要當天有在澳的紀錄（一分鐘都好），都可計一日。</p>
+                <p>若您在2025年內在澳的日數達到183日或以上，您將有資格獲得現金分享。</p>
+                <p>此計算器僅供參考，最終資格以官方通知為準！</p>
+                <p><b>在同一部裝置和瀏覽器使用此計算器可以存取之前的選擇！</b></p>
+                <div id="achievementMessage" class="achievement-message hidden">
+                    🎉 你可以獲得明年的現金分享啦！
+                </div>
+            </div>
+            </div> 
+        </header>
+
+        <div class="calendar-grid" id="calendarGrid">
+           
+        </div>
+
+        <div class="footer">
+            <p>© 2025 在澳日數計算器. 創作人：<a href="https://kelxd.lol">kel</a></p>
+            <p>網頁設計開發｜App設計開發｜電商系統｜企業系統 <a href="https://kelxd.lol/">了解和聯絡</a></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
