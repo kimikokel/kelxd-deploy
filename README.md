@@ -6,7 +6,7 @@ Directory:
 
 kelxd-deploy/
 
-|-- kelpage/
+|-- kelpage/ 
 |  |-- package.json
 |  |-- public/
 |  |-- src/
