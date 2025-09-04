@@ -1,0 +1,179 @@
+/* container */
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.btn input {
+    font-size: 3vw;
+}
+
+.container {
+    background-color: #D8C5B1;
+}
+
+.checkout h3 {
+    font-size: 2.5vw;
+}
+
+.checkout p {
+    font-size: 2vw;
+}
+
+.checkout {
+    width: 100%;
+}
+
+.textbox {
+    width: 60%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: 20%;
+    position:absolute;
+    height: 5vh;
+}
+
+.login input {
+    border-radius: 2vw;
+    padding: 0;
+    margin-bottom: 1%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 100%;
+}
+
+.container h3 {
+    font-size: 3vw;
+}
+
+.container p {
+    font-size: 3vw;
+}
+
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    border: .5vw #80714A solid;
+    border-radius: 2vw;
+    margin: 2% 0% 5% 0%;
+}
+
+.item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    line-height: 5px;
+}
+
+.item img {
+    width: 10vw;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    border: solid white .2vw;
+    border-radius: 20%;
+}
+
+.item2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.titles p {
+    font-weight: normal;
+    font-style: italic;
+    text-align: center;
+}
+
+.container p {
+    font-size: 2vw;
+}
+
+.purchase button{
+    border: none;
+    margin: 0;
+    max-width: 15%;
+}
+
+.container hr {
+    background-color: #80714A;
+    width: 100%;
+    height: .5vw;
+    margin: 5% 0;
+}
+
+/* container */
+
+/* cart box */
+
+#collapse {
+    width: 100%;
+}
+
+.collapse-box {
+    margin-top: 5%;
+}
+
+#arrow{
+    font-size: 5vw;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* cart box */
+
+/* quantity-container */
+
+.total {
+    font-size: 3vw;
+}
+
+.quantity-container {
+    border: solid #80714A .5vw;
+    width: 15vw;
+    height: 5vw;
+    display: flex;
+}
+
+.quantity-container .number {
+    border-right: solid #80714A .5vw;
+    border-left: solid #80714A .5vw;
+    border-radius: 0;
+    font-size: 3vw;
+    width: 2vw;
+    height: 5vw;
+    padding: 0 5%;
+    text-align: center;
+}
+
+.quantity-container .quantity {
+    width: 3vw;
+    font-size: 3vw;
+    border-radius: 0;
+    margin-right: 11%;
+    margin-left: 11%;
+    margin-bottom: 3%;
+    padding: 1%;
+    height: 5vw;
+}
+
+.quantity-container .quantity:hover {
+    border: none;
+    background: none;
+}
+
+.quantity-container #add, #add2 {
+    margin-top: 4%;
+}
+
+/* quantity-container */

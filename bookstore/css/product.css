@@ -1,0 +1,249 @@
+/* container */
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.item {
+    width: 60%;
+    margin: auto;
+    margin-bottom: 4%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    background-color: #D8C5B1;
+    padding: 5% 10%;
+    border: solid #80714A 0.5vw;
+    border-radius: 1vw;
+}
+
+.item img {
+    cursor: initial;
+}
+
+.item hr {
+    width: auto;
+    height: 2px;
+    margin: 0;
+}
+
+/* container */
+
+/* content */
+
+.book {
+    width: 18vw;
+    padding: 2%;
+    border: solid #80714A 0.5vw;
+    border-radius: 10%;
+}
+
+.word {
+    margin-left: 10%;
+    flex-wrap: nowrap;
+}
+
+.word h2 {
+    text-align: left;
+}
+
+.word h3 {
+    text-align: left;
+}
+
+.word p {
+    text-align: left;
+}
+
+.purchase button {
+    border: none;
+    margin: 0;
+    max-width: 15%;
+}
+
+/* content */
+
+/* popups */
+
+.btnbox {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 4vw;
+    background-color: #80714A;
+    box-shadow: inset 8px 8px 15px rgba(0, 0, 0, 0.1);
+    height: 3vw;
+    transition: .5s;
+    padding: 10px;
+}
+
+.btn input {
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 2vw;
+    color: white;
+    text-align: center;
+    font-family: Rockwell, "Courier Bold", Courier, Georgia, Times, "Times New Roman", serif;
+    cursor: pointer;
+    padding-left: 15%;
+}
+
+.btn p {
+    font-size: 2vw;
+    padding-left: 5%;
+}
+
+.btn:hover {
+    background-color: #6a5d3c;
+}
+
+.btn img {
+    position: absolute;
+    width: 3%;
+}
+
+.para {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.para p {
+    text-align: justify;
+}
+
+a {
+    text-decoration: none;
+}
+
+.box {
+    width: 40%;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 35px;
+    border: 2px solid #fff;
+    border-radius: 20px/50px;
+    background-clip: padding-box;
+    text-align: center;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 100000;
+}
+
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    padding-bottom: 20px;
+    background: #D8C5B1;
+    border-radius: 5px;
+    width: 80%;
+    position: absolute;
+    z-index: 100000;
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+}
+
+.popup .close {
+    transition: 5s ease-in-out;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #424B54;
+}
+
+.popup .close:hover {
+    color: red;
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+    max-width: 100%;
+    text-decoration: none;
+}
+
+@media screen and (max-width: 900px) {
+    .box {
+        width: 70%;
+    }
+
+    .popup {
+        width: 70%;
+    }
+
+    .popup .close {
+        top: 5px;
+        right: 5px;
+        font-size: 20px;
+    }
+}
+
+.popup .pop-container .item {
+    background-color: #EFE2BD;
+    margin-bottom: 2%;
+}
+
+.popup .word {
+    margin-left: 10%;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (min-width: 1200px) {
+    .popup {
+        max-height: 85%;
+    }
+
+    .popup .book{
+        width: 10vw;
+    }
+
+    .popup .item {
+        width: 40%;
+        padding: 2% 6%;
+    }
+
+    .popup .content .btn{
+        height: 100%;
+    }
+
+    .popup .content .btn input{
+        font-size: 1vw;
+    }
+
+    .popup .content .btn img{
+        width: 2%;
+    }
+}
+
+/* popups */

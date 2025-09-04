@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women & Children First</title>
+    <link href="../css/main.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-main.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <link href="../css/cart.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-cart.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <script src="../main.js"></script>
+</head>
+
+<body>
+    <img id="m-icon" src="../pics/icon.png" href="../index.html" onclick="nav_visible()">
+
+    <!-- navigation bar -->
+    <div class="navbar" id="nav-visible" style="display: flex;">
+        <div class="items">
+            <img id="home" src="../pics/home.png" onclick="window.location.href = '../index.html'">
+            <a href="../index.html">Home</a>
+
+            <img id="browse" src="../pics/browse.png" onclick="window.location.href = 'browse.html'">
+            <a href="browse.html">Browse</a>
+
+            <img id="cart" src="../pics/shopping-cart.png" onclick="window.location.href = 'cart.html'">
+            <a class="active" href="cart.html">Cart</a>
+
+            <img id="account" src="../pics/user.png" onclick="window.location.href = 'account.html'">
+            <a href="account.html">Account</a>
+        </div>
+    </div> <!-- end of navigation bar -->
+
+    <div class="main" id="main">
+
+        <div class="header" id="header">
+            <img id="icon" src="../pics/icon.png" href="../index.html">
+            <h1 id="title">Women & <br> Children First</h1>
+            <input id="search" type="text" placeholder="Search for categories / books">
+            <img id="search-icon" src="../pics/search.png">
+        </div>
+
+        <h2>Shopping Cart</h2>
+        <hr>
+
+        <div class="container">
+            <div class="item">
+                <img src="../pics/books/9780063049901.jpeg" onclick="window.location.href = 'product.html'">
+                <div class="titles">
+                    <h3>Afterparties</h3>
+                    <p>Anthony Veana So</p>
+                </div>
+                <div class="item2">
+                    <div class="quantity-container">
+                        <input class="quantity" id="minus" type="button" value="-" onclick="quantity(this.id)">
+                        <input class="number" id="qty" type="text" value="1" readonly>
+                        <input class="quantity" id="add" type="button" value="+" onclick="quantity(this.id)">
+                    </div>
+                    <p>$<span id="price">27.99</span></p>
+                </div>
+            </div>
+            <hr>
+            <p class="total">Total: $<span id="total">27.99</span></p>
+        </div>
+
+        <div class="container">
+            <div class="item">
+                <img src="../pics/books/9780802128997.jpeg" onclick="window.location.href = 'product.html'">
+                <div class="titles">
+                    <h3>Freshwater</h3>
+                    <p>Akwaeke Emezi</p>
+                </div>
+                <div class="item2">
+                    <div class="quantity-container">
+                        <input class="quantity" id="minus2" type="button" value="-" onclick="quantity(this.id)">
+                        <input class="number" id="qty2" type="text" value="1" readonly>
+                        <input class="quantity" id="add2" type="button" value="+" onclick="quantity(this.id)">
+                    </div>
+                    <p>$<span id="price2">16.00</span></p>
+                </div>
+            </div>
+            <hr>
+            <p class="total">Total: $<span id="total2">16.00</span></p>
+        </div>
+
+        <hr class="total">
+        <h3>Total: $<span id="amount">43.99</span></h3>
+        <hr class="total">
+
+        <div class="btnbox">
+            <div class="btn"><img src="../pics/card.png"><input type="submit" value="Checkout"
+                    onclick="window.location.href = 'checkout.html'"></input></div>
+        </div>
+
+    </div> <!-- end of main -->
+
+
+    <div class="footer" id="footer">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <hr>
+            <p>Women & Children First</p>
+            <p>5233 N. Clark St. Chicago, IL 60640</p>
+            <p>773.769.9299 / wcfbooks@gmail.com</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>In-Store Browsing</h3>
+            <hr>
+            <p>Tuesday through Sunday</p>
+            <p>11 AM - 6 PM</p>
+            <p>We are closed on Mondays.</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>Curbside Pickup</h3>
+            <hr>
+            <p>MONDAYS</p>
+            <p>11 AM-5 PM</p>
+            <p>Behind the bookstore.</p>
+            <p>Text 773-771-0099 <br> with your name and order number.</p>
+        </div>
+    </div> <!--end of footer-->
+
+</body>
+
+</html>

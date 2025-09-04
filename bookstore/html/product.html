@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women & Children First</title>
+    <link href="../css/main.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-main.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <link href="../css/product.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-product.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <script src="../main.js"></script>
+</head>
+
+<body>
+    <img id="m-icon" src="../pics/icon.png" href="../index.html" onclick="nav_visible()">
+
+    <!-- navigation bar -->
+    <div class="navbar" id="nav-visible" style="display: flex;">
+        <div class="items">
+            <img id="home" src="../pics/home.png" onclick="window.location.href = '../index.html'">
+            <a href="../index.html">Home</a>
+
+            <img id="browse" src="../pics/browse.png" onclick="window.location.href = 'browse.html'">
+            <a href="browse.html">Browse</a>
+
+            <img id="cart" src="../pics/shopping-cart.png" onclick="window.location.href = 'cart.html'">
+            <a class="active" href="cart.html">Cart</a>
+
+            <img id="account" src="../pics/user.png" onclick="window.location.href = 'account.html'">
+            <a href="account.html">Account</a>
+        </div>
+    </div> <!-- end of navigation bar -->
+
+    <div class="main" id="main">
+
+        <div class="header" id="header">
+            <img id="icon" src="../pics/icon.png" href="../index.html">
+            <h1 id="title">Women & <br> Children First</h1>
+            <input id="search" type="text" placeholder="Search for categories / books">
+            <img id="search-icon" src="../pics/search.png">
+        </div>
+
+        <h2>Product</h2>
+        <hr>
+
+        <div class="container">
+            <div class="item">
+                <img class="book" src="../pics/books/9780063049901.jpeg">
+                <div class="word">
+                    <h3>Afterparties</h3>
+                    <p><i>Anthony Veana So</i></p>
+                    <hr>
+                    <p><strong>Availability: </strong>Available</p>
+                    <p><strong>Book Format: </strong>Hardcover</p>
+                    <h2><i>$27.99</i></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="btnbox">
+            <a href="#popup1">
+                <div class="btn"><img src="../pics/white cart.png"><input type="button" value="Add to Cart"></input>
+                </div>
+            </a>
+        </div>
+        <div class="btnbox">
+            <div class="btn"><img src="../pics/card.png"><input type="button" value="Checkout"
+                    onclick="window.location.href = 'checkout.html'"></input></div>
+        </div>
+        <!-- <hr style="margin-top: 4%; margin-bottom: 0;"> -->
+
+        <h2>Book Detail</h2>
+        <hr>
+
+        <div class="word">
+            <p><strong>ISBN: </strong>9780063049901</p>
+            <p><strong>ISBN-10: </strong>0063049902</p>
+            <p><strong>Publisher: </strong>Ecco</p>
+            <p><strong>Publication Date: </strong>August 3rd, 2021</p>
+            <p><strong>Pages: </strong>272</p>
+            <p><strong>Language: </strong>English</p>
+        </div>
+
+        <h2>Description</h2>
+        <hr>
+
+        <div class="para">
+            <p>
+                <strong>A vibrant story collection about Cambodian-American life—immersive and comic,
+                    yet unsparing—that offers profound insight into the intimacy of queer and immigrant
+                    communities</strong>
+            </p>
+            <p>
+                Seamlessly transitioning between the absurd and the tenderhearted, balancing acerbic humor
+                with sharp emotional depth, Afterparties offers an expansive portrait of the lives of
+                Cambodian-Americans. As the children of refugees carve out radical new paths for themselves
+                in California, they shoulder the inherited weight of the Khmer Rouge genocide and grapple
+                with the complexities of race, sexuality, friendship, and family.
+            </p>
+            <p>
+                A high school badminton coach and failing grocery store owner tries to relive his glory days
+                by beating a rising star teenage player. Two drunken brothers attend a wedding afterparty and
+                hatch a plan to expose their shady uncle’s snubbing of the bride and groom. A queer love affair
+                sparks between an older tech entrepreneur trying to launch a “safe space” app and a disillusioned
+                young teacher obsessed with Moby-Dick. And in the sweeping final story, a nine-year-old child learns
+                that his mother survived a racist school shooter.
+            </p>
+            <p>
+                The stories in Afterparties, “powered by So’s skill with the telling detail, are like beams
+                of wry, affectionate light, falling from different directions on a complicated, struggling,
+                beloved American community” (George Saunders).
+            </p>
+        </div>
+
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <a class="close" href="#">&times;</a>
+                <h3>Added to Cart</h3>
+                <hr>
+                <div class="content">
+                    <div class="pop-container">
+                        <div class="item">
+                            <img class="book" src="../pics/books/9780063049901.jpeg">
+                            <div class="word">
+                                <h3>Afterparties</h3>
+                                <p><i>Anthony Veana So</i></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btnbox">
+                        <div class="btn" id="cart"><img src="../pics/white cart.png"><input type="button"
+                                value="View Cart" onclick="window.location.href = 'cart.html'"></input></div>
+                    </div>
+                    <div class="btnbox">
+                        <div class="btn" id="account"><img src="../pics/card.png"><input type="button" value="Checkout"
+                                onclick="window.location.href = 'checkout.html'"></input></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- end of main -->
+
+    <div class="footer" id="footer">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <hr>
+            <p>Women & Children First</p>
+            <p>5233 N. Clark St. Chicago, IL 60640</p>
+            <p>773.769.9299 / wcfbooks@gmail.com</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>In-Store Browsing</h3>
+            <hr>
+            <p>Tuesday through Sunday</p>
+            <p>11 AM - 6 PM</p>
+            <p>We are closed on Mondays.</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>Curbside Pickup</h3>
+            <hr>
+            <p>MONDAYS</p>
+            <p>11 AM-5 PM</p>
+            <p>Behind the bookstore.</p>
+            <p>Text 773-771-0099 <br> with your name and order number.</p>
+        </div>
+    </div> <!--end of footer-->
+
+</body>
+
+</html>

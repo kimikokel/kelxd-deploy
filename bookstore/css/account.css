@@ -1,0 +1,85 @@
+/* container */
+
+.container {
+    border: 5px #80714A solid;
+    border-radius: 2vw;
+    margin: 0 10% 0 10%;
+    background-color: #D8C5B1;
+}
+
+.container h3 {
+    margin-top: 4%;
+}
+
+.container p {
+    font-size: 2vw;
+}
+
+/* container */
+
+/* login */
+
+.login {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 10%;
+    max-width: 90%;
+}
+.textbox {
+    width: 80%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: 8%;
+}
+
+.login input {
+    border: none;
+    border-radius: 2vw;
+    padding: 5px;
+    margin-bottom: 1%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 100%;
+}
+
+.btnbox {
+    margin-top: 2%;
+    margin-bottom: 3%;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 4vw;
+    background-color: #80714A;
+    box-shadow: inset 8px 8px 15px rgba(0, 0, 0, 0.1);
+    height: 3vw;
+    transition: .5s;
+}
+
+.btn img {
+    position: absolute;
+    width: 3%;
+    margin-right: 10%;
+}
+
+.btn p {
+    font-size: 2vw;
+    padding-left: 5%;
+}
+
+.btn:hover {
+    background-color: #6a5d3c;
+}
+
+.login input {
+    border: solid #424B54 .2vw;
+}
+
+/* login */

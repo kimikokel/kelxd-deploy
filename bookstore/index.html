@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women & Children First</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="css/m-main.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <link href="css/home.css" media="screen and (min-width: 901px)" rel="stylesheet" type="text/css">
+    <link href="css/m-home.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+    
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <img id="m-icon" src="pics/icon.png" href="index.html">
+
+    <!-- navigation bar -->
+    <div class="navbar" id="nav-visible" style="display: flex;">
+        <div class="items">
+
+            <img id="home" src="pics/home.png" onclick="window.location.href = 'index.html'">
+            <a class="active" href="index.html">Home</a>
+
+            <img id="browse" src="pics/browse.png" onclick="window.location.href = 'html/browse.html'">
+            <a href="html/browse.html">Browse</a>
+
+            <img id="cart" src="pics/shopping-cart.png" onclick="window.location.href = 'html/cart.html'">
+            <a href="html/cart.html">Cart</a>
+
+            <img id="account" src="pics/user.png" onclick="window.location.href = 'html/account.html'">
+            <a href="html/account.html">Account</a>
+        </div>
+    </div> <!-- end of navigation bar -->
+
+    <div class="main">
+
+        <div class="header">
+            <img id="icon" src="pics/icon.png" href="index.html">
+            <h1>Women & <br> Children First</h1>
+            <input id="search" type="text" placeholder="Search for categories / books">
+            <img id="search-icon" src="pics/search.png">
+        </div>
+
+        <h2>Top Sellers</h2>
+        <hr>
+        <table class="box">
+            <tr>
+                <td><button id="back-button" class="nav-button">&lt;</button></td>
+                <td class="product-box">
+                    <img class="book" src="pics/books/9780063049901.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9780802128997.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9781419754319.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9780593132593.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9781501173219.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9780525564232.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                </td>
+                <td class="m-product-box">
+                    <img class="book" src="pics/books/9780063049901.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9780802128997.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                    <img class="book" src="pics/books/9781419754319.jpeg"
+                        onclick="window.location.href = 'html/product.html'">
+                </td>
+                <td><button id="next-button" class="nav-button">&gt;</button></td>
+            </tr>
+        </table>
+
+        <h2>Browse By Categories</h2>
+        <hr>
+
+        <table class="category">
+            <tr>
+                <td>
+                    <img class="cat" src="pics/1.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/2.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/3.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/4.png" onclick="window.location.href = 'html/browse.html'">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h3>Essay</h3>
+                    <h3>Fiction</h3>
+                    <h3>Graphic Novel</h3>
+                    <h3>Feminist</h3>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <img class="cat" src="pics/5.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/6.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/7.png" onclick="window.location.href = 'html/browse.html'">
+                    <img class="cat" src="pics/8.png" onclick="window.location.href = 'html/browse.html'">
+                </td>
+            </tr>
+
+            <td>
+                <h3>Disability</h3>
+                <h3>Black Lives Matters</h3>
+                <h3>Astrology</h3>
+                <h3>Children</h3>
+            </td>
+            </tr>
+        </table>
+    </div> <!-- end of main -->
+
+    <div class="footer" id="footer">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <hr>
+            <p>Women & Children First</p>
+            <p>5233 N. Clark St. Chicago, IL 60640</p>
+            <p>773.769.9299 / wcfbooks@gmail.com</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>In-Store Browsing</h3>
+            <hr>
+            <p>Tuesday through Sunday</p>
+            <p>11 AM - 6 PM</p>
+            <p>We are closed on Mondays.</p>
+        </div> 
+
+        <div class="footer-content">
+            <h3>Curbside Pickup</h3>
+            <hr>
+            <p>MONDAYS</p>
+            <p>11 AM-5 PM</p>
+            <p>Behind the bookstore.</p>
+            <p>Text 773-771-0099 <br> with your name and order number.</p>
+        </div>
+    </div> <!--end of footer-->
+
+</body>
+
+</html>

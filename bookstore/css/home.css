@@ -1,0 +1,24 @@
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.product-box {
+  border: #80714A solid 5px;
+  border-radius: 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: fit-content;
+}
+
+.m-product-box {
+  display: none;
+}
+
+.box img {
+  justify-content: space-around;
+}

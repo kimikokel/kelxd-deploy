@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women & Children First</title>
+    <link href="../css/main.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-main.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <link href="../css/checkout.css" rel="stylesheet" type="text/css">
+    <link href="../css/m-checkout.css" media="screen and (max-width: 900px)" rel="stylesheet" type="text/css">
+
+    <script src="../main.js"></script>
+</head>
+
+<body>
+    <img id="m-icon" src="../pics/icon.png" href="../index.html" onclick="nav_visible()">
+    
+    <!-- navigation bar -->
+    <div class="navbar" id="nav-visible" style="display: flex;">
+        <div class="items">
+            <img id="home" src="../pics/home.png" onclick="window.location.href = '../index.html'">
+            <a href="../index.html">Home</a>
+
+            <img id="browse" src="../pics/browse.png" onclick="window.location.href = 'browse.html'">
+            <a href="browse.html">Browse</a>
+
+            <img id="cart" src="../pics/shopping-cart.png" onclick="window.location.href = 'cart.html'">
+            <a class="active" href="cart.html">Cart</a>
+
+            <img id="account" src="../pics/user.png" onclick="window.location.href = 'account.html'">
+            <a href="account.html">Account</a>
+        </div>
+    </div> <!-- end of navigation bar -->
+
+    <div class="main" id="main">
+
+        <div class="header" id="header">
+            <img id="icon" src="../pics/icon.png" href="../index.html">
+            <h1 id="title">Women & <br> Children First</h1>
+            <input id="search" type="text" placeholder="Search for categories / books">
+            <img id="search-icon" src="../pics/search.png">
+        </div>
+
+        <h2>Checkout</h2>
+        <hr>
+
+        <div class="summary">
+
+            <div class="container">
+                <div class="collapse-box">
+                    <h2>Cart</h2>
+                    <h2 class="collapse" id="arrow" onclick="collapse()"> &nbsp; &#8964;</h2>
+                </div>
+                <div id="collapse">
+                    <hr style="margin-top: 1vw">
+                    <div class="item">
+                        <img src="../pics/books/9780063049901.jpeg" onclick="window.location.href = 'product.html'">
+                        <div class="titles">
+                            <h3>Afterparties</h3>
+                            <p>Anthony Veana So</p>
+                        </div>
+                        <div class="item2">
+                            <p>$<span id="price">27.99</span></p>
+                            <div class="quantity-container">
+                                <input class="quantity" id="minus" type="button" value="-"
+                                    onclick="checkout_quantity(this.id, 'total')">
+                                <input class="number" id="qty" type="text" value="1" readonly>
+                                <input class="quantity" id="add" type="button" value="+"
+                                    onclick="checkout_quantity(this.id, 'total')">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="item">
+                        <img src="../pics/books/9780593132593.jpeg" onclick="window.location.href = 'product.html'">
+                        <div class="titles">
+                            <h3>Bestiary</h3>
+                            <p>K-Ming Chang</p>
+                        </div>
+                        <div class="item2">
+                            <p>$<span id="price2">17.00</span></p>
+                            <div class="quantity-container">
+                                <input class="quantity" id="minus2" type="button" value="-"
+                                    onclick="checkout_quantity(this.id,'total')">
+                                <input class="number" id="qty2" type="text" value="2" readonly>
+                                <input class="quantity" id="add2" type="button" value="+"
+                                    onclick="checkout_quantity(this.id, 'total')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin-bottom: 0;">
+                <h3 class="total">Total: $<span id="total">61.99</span></h3>
+            </div>
+
+            <div class="checkout">
+                <h3>Customer Details</h3>
+                <hr>
+                <p>Already a member? Login <a href="account.html"><i>here</i></a></p>
+                <form>
+                    <div class="login">
+                        <p>*First Name:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>*Last Name:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>*Mobile Number:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>*Email Address:</p>
+                        <div class="textbox">
+                            <input type="email" required>
+                        </div>
+                    </div>
+                    <h3>Delivery Details</h3>
+                    <hr>
+                    <div class="login">
+                        <p>*Country:</p>
+                        <div class="textbox">
+                            <input list="country" required>
+                        </div>
+                        <datalist id="country">
+                            <option value="United States">
+                            <option value="Other">
+                        </datalist>
+                    </div>
+                    <div class="login">
+                        <p>*State:</p>
+                        <div class="textbox">
+                            <input list="state" required>
+                        </div>
+                        <datalist id="state">
+                            <option value="Alaska">
+                            <option value="Arizona">
+                            <option value="California">
+                            <option value="Florida">
+                            <option value="Georgia">
+                            <option value="Guam">
+                            <option value="Hawaii">
+                            <option value="Massachusetts">
+                            <option value="Michigan">
+                            <option value="New York">
+                            <option value="Ohio">
+                            <option value="Texas">
+                            <option value="Washington">
+                            <option value="Others">
+                        </datalist>
+                    </div>
+                    <div class="login">
+                        <p>*City:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>*Street Address:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>Street Address 2:</p>
+                        <div class="textbox">
+                            <input type="text">
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>*Postal Code:</p>
+                        <div class="textbox">
+                            <input type="text" required>
+                        </div>
+                    </div>
+                    <div class="login">
+                        <p>Company:</p>
+                        <div class="textbox">
+                            <input type="text">
+                        </div>
+                    </div>
+                    <div class="btnbox">
+                        <div class="btn"><input type="submit" value="Submit Order"
+                                onclick="window.location.href = 'order.html'"></input></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+    </div> <!-- end of main -->
+
+
+    <div class="footer" id="footer">
+        <div class="footer-content">
+            <h3>Contact Us</h3>
+            <hr>
+            <p>Women & Children First</p>
+            <p>5233 N. Clark St. Chicago, IL 60640</p>
+            <p>773.769.9299 / wcfbooks@gmail.com</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>In-Store Browsing</h3>
+            <hr>
+            <p>Tuesday through Sunday</p>
+            <p>11 AM - 6 PM</p>
+            <p>We are closed on Mondays.</p>
+        </div>
+
+        <div class="footer-content">
+            <h3>Curbside Pickup</h3>
+            <hr>
+            <p>MONDAYS</p>
+            <p>11 AM-5 PM</p>
+            <p>Behind the bookstore.</p>
+            <p>Text 773-771-0099 <br> with your name and order number.</p>
+        </div>
+    </div> <!--end of footer-->
+
+</body>
+
+</html>

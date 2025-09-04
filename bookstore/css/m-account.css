@@ -1,0 +1,48 @@
+/* container */
+
+.container {
+    border: .5vw #80714A solid;
+    border-radius: 2vw;
+    background-color: #D8C5B1;
+    margin-bottom: 8%;
+}
+
+.container h3 {
+    font-size: 5vw;
+    margin-top: 4%;
+    margin-bottom: 0;
+}
+
+.container p {
+    font-size: 3vw;
+}
+
+/* container */
+
+/* login */
+
+.textbox {
+    width: 90%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-left: 7%;
+    height: 5vh;
+}
+
+.login input {
+    border: solid .5vw #424B54;
+    border-radius: 2vw;
+    padding: 0;
+    margin-bottom: 1%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 100%;
+    font-size: 4vw;
+}
+
+.btn img {
+    margin-right: 10%;
+}
+
+/* login */
