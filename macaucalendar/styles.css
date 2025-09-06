@@ -60,26 +60,39 @@ body.light-theme .day:not(.empty):hover {
     color: #1f2937;
 }
 
+/* Override hover for selected days in light theme */
+body.light-theme .day.selected:not(.empty):hover {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%) !important;
+    color: white !important;
+    transform: scale(1.15) !important;
+}
+
 /* Touch feedback for light theme */
 body.light-theme .day.touch-active {
-    background: #e2e8f0 !important;
+    background: linear-gradient(135deg, #7dd3a3 0%, #4ade80 100%) !important;
     transform: scale(1.05) !important;
-    color: #1f2937 !important;
+    color: #ffffff !important;
     transition: all 0.1s ease !important;
 }
 
 /* Disable hover effects on touch devices for light theme */
 @media (hover: none) and (pointer: coarse) {
     body.light-theme .day:not(.empty):hover {
-        background: #f1f5f9;
-        transform: none;
-        color: #374151;
+        background: #f1f5f9 !important;
+        transform: none !important;
+        color: #374151 !important;
+    }
+    
+    body.light-theme .day.selected:not(.empty):hover {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%) !important;
+        transform: scale(1.05) !important;
+        color: white !important;
     }
     
     body.light-theme .day.touch-active {
-        background: #e2e8f0;
-        transform: scale(1.05);
-        color: #1f2937;
+        background: linear-gradient(135deg, #7dd3a3 0%, #4ade80 100%) !important;
+        transform: scale(1.05) !important;
+        color: #ffffff !important;
     }
 }
 
@@ -88,8 +101,10 @@ body.light-theme .day.empty {
 }
 
 body.light-theme .day.selected {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-    color: white;
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4) !important;
 }
 
 body.light-theme .day.dragging {
@@ -403,9 +418,16 @@ header h1 {
     color: #ffffff;
 }
 
+/* Override hover for selected days */
+.day.selected:not(.empty):hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    transform: scale(1.15) !important;
+    color: white !important;
+}
+
 /* Touch feedback for mobile */
 .day.touch-active {
-    background: #4a4a5a !important;
+    background: linear-gradient(135deg, #8b93c7 0%, #9d8fb8 100%) !important;
     transform: scale(1.05) !important;
     color: #ffffff !important;
     transition: all 0.1s ease !important;
@@ -414,15 +436,21 @@ header h1 {
 /* Disable hover effects on touch devices */
 @media (hover: none) and (pointer: coarse) {
     .day:not(.empty):hover {
-        background: #353545;
-        transform: none;
-        color: #d1d5db;
+        background: #353545 !important;
+        transform: none !important;
+        color: #d1d5db !important;
+    }
+    
+    .day.selected:not(.empty):hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        transform: scale(1.05) !important;
+        color: white !important;
     }
     
     .day.touch-active {
-        background: #4a4a5a;
-        transform: scale(1.05);
-        color: #ffffff;
+        background: linear-gradient(135deg, #8b93c7 0%, #9d8fb8 100%) !important;
+        transform: scale(1.05) !important;
+        color: #ffffff !important;
     }
 }
 
@@ -432,14 +460,14 @@ header h1 {
 }
 
 .day.selected {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4) !important;
 }
 
 .day.selected:hover {
-    transform: scale(1.15);
+    transform: scale(1.15) !important;
 }
 
 .day.dragging {

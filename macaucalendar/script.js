@@ -268,7 +268,7 @@ class InteractiveCalendar {
             // Simple tap without movement - toggle selection
             this.toggleDaySelection(this.dragStartDay);
             
-            // Delay clearing touch-active state to ensure visual feedback is seen
+            // Clear touch-active state with a small delay for visual feedback
             setTimeout(() => {
                 document.querySelectorAll('.day.touch-active').forEach(day => {
                     day.classList.remove('touch-active');
@@ -282,10 +282,6 @@ class InteractiveCalendar {
         }
         
         this.resetDragState();
-        this.touchStartTime = null;
-        this.touchStartX = null;
-        this.touchStartY = null;
-        this.hasMoved = false;
     }
 
     handleTouchCancel(e) {
