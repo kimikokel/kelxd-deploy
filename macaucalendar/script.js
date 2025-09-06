@@ -144,6 +144,7 @@ class InteractiveCalendar {
         calendarGrid.addEventListener('touchstart', (e) => this.handleTouchStart(e));
         calendarGrid.addEventListener('touchmove', (e) => this.handleTouchMove(e));
         calendarGrid.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        calendarGrid.addEventListener('touchcancel', (e) => this.handleTouchCancel(e));
 
         // Month-specific select/deselect buttons
         calendarGrid.addEventListener('click', (e) => {
@@ -162,6 +163,9 @@ class InteractiveCalendar {
         this.isMouseDown = true;
         this.isDragging = false;
         this.dragStartDay = dayElement;
+        
+        // Store the intended selection state (opposite of current state)
+        this.dragSelectionMode = !dayElement.classList.contains('selected');
         
         // Single click selection
         this.toggleDaySelection(dayElement);
@@ -204,10 +208,18 @@ class InteractiveCalendar {
         const dayElement = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.day:not(.empty)');
         if (!dayElement) return;
 
+        // Add visual feedback for touch press
+        dayElement.classList.add('touch-active');
+        
         this.isMouseDown = true;
         this.isDragging = false;
         this.dragStartDay = dayElement;
-        this.toggleDaySelection(dayElement);
+        this.touchStartTime = Date.now();
+        this.touchStartPosition = { x: touch.clientX, y: touch.clientY };
+        this.hasMoved = false;
+        
+        // Store the intended selection state (opposite of current state)
+        this.dragSelectionMode = !dayElement.classList.contains('selected');
         
         e.preventDefault();
     }
@@ -217,14 +229,30 @@ class InteractiveCalendar {
 
         const touch = e.touches[0];
         const dayElement = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.day:not(.empty)');
-        if (!dayElement) return;
-
-        if (!this.isDragging) {
-            this.isDragging = true;
+        
+        // Calculate movement distance
+        const deltaX = Math.abs(touch.clientX - this.touchStartX);
+        const deltaY = Math.abs(touch.clientY - this.touchStartY);
+        const moveDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        // If moved more than 10 pixels, consider it a drag
+        if (moveDistance > 10) {
+            this.hasMoved = true;
         }
 
-        this.dragCurrentDay = dayElement;
-        this.updateDragSelection();
+        if (!dayElement) return;
+
+        // If moved significantly, start dragging
+        if (this.hasMoved && !this.isDragging) {
+            this.isDragging = true;
+            // Remove touch-active class when starting to drag
+            this.dragStartDay.classList.remove('touch-active');
+        }
+
+        if (this.isDragging) {
+            this.dragCurrentDay = dayElement;
+            this.updateDragSelection();
+        }
         
         e.preventDefault();
     }
@@ -232,7 +260,40 @@ class InteractiveCalendar {
     handleTouchEnd(e) {
         if (this.isDragging) {
             this.finalizeDragSelection();
+            // Clear touch-active states immediately for drag
+            document.querySelectorAll('.day.touch-active').forEach(day => {
+                day.classList.remove('touch-active');
+            });
+        } else if (this.dragStartDay && !this.hasMoved) {
+            // Simple tap without movement - toggle selection
+            this.toggleDaySelection(this.dragStartDay);
+            
+            // Delay clearing touch-active state to ensure visual feedback is seen
+            setTimeout(() => {
+                document.querySelectorAll('.day.touch-active').forEach(day => {
+                    day.classList.remove('touch-active');
+                });
+            }, 150);
+        } else {
+            // Clear touch-active states immediately for other cases
+            document.querySelectorAll('.day.touch-active').forEach(day => {
+                day.classList.remove('touch-active');
+            });
         }
+        
+        this.resetDragState();
+        this.touchStartTime = null;
+        this.touchStartX = null;
+        this.touchStartY = null;
+        this.hasMoved = false;
+    }
+
+    handleTouchCancel(e) {
+        // Clear any touch-active states
+        document.querySelectorAll('.day.touch-active').forEach(day => {
+            day.classList.remove('touch-active');
+        });
+        
         this.resetDragState();
     }
 
@@ -247,9 +308,17 @@ class InteractiveCalendar {
         // Get all days between start and current
         const daysBetween = this.getDaysBetween(this.dragStartDay, this.dragCurrentDay);
         
-        // Highlight days in selection range
+        // Highlight days in selection range with preview of intended selection state
         daysBetween.forEach(day => {
             day.classList.add('dragging');
+            // Add a class to indicate the intended selection state
+            if (this.dragSelectionMode) {
+                day.classList.add('drag-selecting');
+                day.classList.remove('drag-deselecting');
+            } else {
+                day.classList.add('drag-deselecting');
+                day.classList.remove('drag-selecting');
+            }
         });
     }
 
@@ -257,16 +326,20 @@ class InteractiveCalendar {
         if (!this.dragStartDay || !this.dragCurrentDay) return;
 
         const daysBetween = this.getDaysBetween(this.dragStartDay, this.dragCurrentDay);
-        const startSelected = this.dragStartDay.classList.contains('selected');
+        
+        // Use the stored selection mode instead of checking current state
+        const shouldSelect = this.dragSelectionMode;
         
         // Apply selection state to all days in range
         daysBetween.forEach(day => {
-            if (startSelected) {
+            if (shouldSelect) {
                 this.selectDay(day);
             } else {
                 this.deselectDay(day);
             }
             day.classList.remove('dragging');
+            day.classList.remove('drag-selecting');
+            day.classList.remove('drag-deselecting');
         });
 
         this.updateSelectedCount();
@@ -301,11 +374,24 @@ class InteractiveCalendar {
         this.isDragging = false;
         this.dragStartDay = null;
         this.dragCurrentDay = null;
+        this.touchStartTime = null;
+        this.touchStartX = null;
+        this.touchStartY = null;
+        this.touchStartPosition = null;
+        this.hasMoved = false;
+        this.dragSelectionMode = null;
         document.body.classList.remove('selecting');
         
         // Remove drag highlights
         document.querySelectorAll('.day.dragging').forEach(day => {
             day.classList.remove('dragging');
+            day.classList.remove('drag-selecting');
+            day.classList.remove('drag-deselecting');
+        });
+        
+        // Remove touch-active states
+        document.querySelectorAll('.day.touch-active').forEach(day => {
+            day.classList.remove('touch-active');
         });
     }
 

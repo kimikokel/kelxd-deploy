@@ -23,7 +23,7 @@ body.light-theme .container {
 }
 
 body.light-theme header {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    background: linear-gradient(135deg, #1fc65c 0%, #13a84a 100%);
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -51,11 +51,36 @@ body.light-theme .day-header {
 body.light-theme .day {
     color: #374151;
     background: #f1f5f9;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 body.light-theme .day:not(.empty):hover {
     background: #e2e8f0;
     color: #1f2937;
+}
+
+/* Touch feedback for light theme */
+body.light-theme .day.touch-active {
+    background: #e2e8f0 !important;
+    transform: scale(1.05) !important;
+    color: #1f2937 !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Disable hover effects on touch devices for light theme */
+@media (hover: none) and (pointer: coarse) {
+    body.light-theme .day:not(.empty):hover {
+        background: #f1f5f9;
+        transform: none;
+        color: #374151;
+    }
+    
+    body.light-theme .day.touch-active {
+        background: #e2e8f0;
+        transform: scale(1.05);
+        color: #1f2937;
+    }
 }
 
 body.light-theme .day.empty {
@@ -72,8 +97,19 @@ body.light-theme .day.dragging {
     color: white;
 }
 
+body.light-theme .day.drag-selecting {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    color: white;
+}
+
+body.light-theme .day.drag-deselecting {
+    background: #f1f5f9;
+    color: #374151;
+    opacity: 0.6;
+}
+
 body.light-theme .day.drag-over {
-    border-color: #22c55e;
+    border-color: #16a55b;
     background: rgba(34, 197, 94, 0.2);
 }
 
@@ -86,7 +122,7 @@ body.light-theme .weekend.selected {
 }
 
 body.light-theme .month-btn {
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+    background: linear-gradient(135deg, #16ca58 0%, #1fc45c 100%);
     box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
 }
 
@@ -110,7 +146,7 @@ body.light-theme .footer {
 }
 
 body.light-theme .footer a {
-    color: #22c55e;
+    color: #16a55b;
 }
 
 body.light-theme .footer a:hover {
@@ -356,6 +392,8 @@ header h1 {
     border: 2px solid transparent;
     color: #d1d5db;
     background: #353545;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .day:not(.empty):hover {
@@ -363,6 +401,29 @@ header h1 {
     transform: scale(1.1);
     z-index: 1;
     color: #ffffff;
+}
+
+/* Touch feedback for mobile */
+.day.touch-active {
+    background: #4a4a5a !important;
+    transform: scale(1.05) !important;
+    color: #ffffff !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .day:not(.empty):hover {
+        background: #353545;
+        transform: none;
+        color: #d1d5db;
+    }
+    
+    .day.touch-active {
+        background: #4a4a5a;
+        transform: scale(1.05);
+        color: #ffffff;
+    }
 }
 
 .day.empty {
@@ -386,6 +447,17 @@ header h1 {
     color: white;
     transform: scale(1.05);
     opacity: 0.8;
+}
+
+.day.drag-selecting {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.day.drag-deselecting {
+    background: #353545;
+    color: #d1d5db;
+    opacity: 0.6;
 }
 
 .day.drag-over {
