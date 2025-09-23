@@ -144,10 +144,10 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`🌸 Kelist Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌸 Kelist Server running on http://0.0.0.0:${PORT}`);
     console.log(`📊 Data stored in: ${DATA_FILE}`);
-    console.log(`🔄 Sync API available at: http://localhost:${PORT}/api`);
+    console.log(`🔄 Sync API available at: http://0.0.0.0:${PORT}/api`);
 });
 
 // Graceful shutdown
