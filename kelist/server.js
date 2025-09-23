@@ -22,7 +22,9 @@ const corsOptions = {
         'https://*.amplifyapp.com',
         // Allow your Lightsail server IP
         'http://18.141.202.4:3000',
-        'https://18.141.202.4:3000'
+        'https://18.141.202.4:3000',
+        'http://18.141.202.4',
+        'https://18.141.202.4'
     ],
     credentials: true,
     optionsSuccessStatus: 200,
