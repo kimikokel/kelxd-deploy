@@ -448,8 +448,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Service worker for offline support (optional)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/kelist/sw.js')
-            .then(() => console.log('Service Worker registered'))
-            .catch(() => console.log('Service Worker registration failed'));
+        navigator.serviceWorker.register('./sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered successfully:', registration.scope);
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
     });
 }
