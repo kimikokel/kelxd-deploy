@@ -7,43 +7,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data', 'boards.json');
 
-// CORS configuration for production with your Lightsail IP
-const corsOptions = {
-    origin: [
-        'http://localhost:3000',
-        'http://localhost:8080',
-        'http://127.0.0.1:3000',
-        'https://localhost:3000',
-        // Your custom domain (HTTPS site making HTTP API calls)
-        'https://www.kelxd.lol',
-        'https://kelxd.lol',
-        // Your AWS Amplify domain (fallback)
-        'https://main.d*.amplifyapp.com',
-        'https://*.amplifyapp.com',
-        // Allow your Lightsail server IP (HTTP)
-        'http://18.141.202.4',
-        'http://18.141.202.4:3000',
-        // Allow any HTTPS origin for mixed content (temporary fix)
-        function(origin, callback) {
-            // Allow requests with no origin (mobile apps, curl, etc.)
-            if (!origin) return callback(null, true);
-            
-            // Allow any HTTPS origin to make requests to HTTP API
-            if (origin.startsWith('https://')) {
-                return callback(null, true);
-            }
-            
-            return callback(null, false);
-        }
-    ],
-    credentials: false, // Set to false for mixed content requests
-    optionsSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin']
-};
+// Remove CORS middleware - nginx will handle CORS headers
+// const corsOptions = { ... };
 
 // Middleware
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions)); // Commented out - nginx handles CORS
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static('static')); // Serve static files from 'static' directory
 
