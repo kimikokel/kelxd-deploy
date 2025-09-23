@@ -14,14 +14,15 @@ const corsOptions = {
         'http://localhost:8080',
         'http://127.0.0.1:3000',
         'https://localhost:3000',
-        // Your AWS Amplify domain (update when you get it)
+        // Your custom domain
+        'https://www.kelxd.lol',
+        'https://kelxd.lol',
+        // Your AWS Amplify domain (fallback)
         'https://main.d*.amplifyapp.com',
         'https://*.amplifyapp.com',
         // Allow your Lightsail server IP
         'http://18.141.202.4:3000',
-        'https://18.141.202.4:3000',
-        // Add your custom domain if you have one
-        'https://kelist.your-domain.com'
+        'https://18.141.202.4:3000'
     ],
     credentials: true,
     optionsSuccessStatus: 200,
