@@ -14,22 +14,32 @@ const corsOptions = {
         'http://localhost:8080',
         'http://127.0.0.1:3000',
         'https://localhost:3000',
-        // Your custom domain
+        // Your custom domain (HTTPS site making HTTP API calls)
         'https://www.kelxd.lol',
         'https://kelxd.lol',
         // Your AWS Amplify domain (fallback)
         'https://main.d*.amplifyapp.com',
         'https://*.amplifyapp.com',
-        // Allow your Lightsail server IP
-        'http://18.141.202.4:3000',
-        'https://18.141.202.4:3000',
+        // Allow your Lightsail server IP (HTTP)
         'http://18.141.202.4',
-        'https://18.141.202.4'
+        'http://18.141.202.4:3000',
+        // Allow any HTTPS origin for mixed content (temporary fix)
+        function(origin, callback) {
+            // Allow requests with no origin (mobile apps, curl, etc.)
+            if (!origin) return callback(null, true);
+            
+            // Allow any HTTPS origin to make requests to HTTP API
+            if (origin.startsWith('https://')) {
+                return callback(null, true);
+            }
+            
+            return callback(null, false);
+        }
     ],
-    credentials: true,
+    credentials: false, // Set to false for mixed content requests
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin']
 };
 
 // Middleware

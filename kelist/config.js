@@ -2,8 +2,8 @@
 // Updated with your Lightsail server details
 
 const CONFIG = {
-    // Production server URL (your Lightsail server)
-    PRODUCTION_API_URL: 'https://18.141.202.4:3000/api',
+    // Production server URL (your Lightsail server via nginx HTTPS proxy)
+    PRODUCTION_API_URL: 'https://18.141.202.4/api',
     
     // Development server URL (for local testing)
     DEVELOPMENT_API_URL: 'http://localhost:3000/api',
@@ -11,9 +11,7 @@ const CONFIG = {
     // Auto-detect environment
     API_URL: window.location.hostname === 'localhost' 
         ? 'http://localhost:3000/api'
-        : window.location.hostname === 'www.kelxd.lol'
-        ? 'https://18.141.202.4:3000/api'
-        : 'https://18.141.202.4:3000/api',
+        : 'https://18.141.202.4/api',  // Use HTTPS nginx proxy
     
     // Sync settings
     SYNC_INTERVAL: 30000, // 30 seconds

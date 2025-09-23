@@ -43,15 +43,22 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
     
-    // Don't intercept API requests - let them go directly to the network
+    // Skip API requests and external requests completely
     if (requestUrl.pathname.startsWith('/api') || 
         requestUrl.hostname === '18.141.202.4' ||
-        requestUrl.hostname === 'localhost' && requestUrl.port === '3000') {
-        console.log('Service Worker: Skipping API request:', event.request.url);
-        return; // Let the request go through normally
+        (requestUrl.hostname === 'localhost' && requestUrl.port === '3000') ||
+        requestUrl.protocol === 'https:' && requestUrl.hostname === '18.141.202.4') {
+        console.log('Service Worker: Skipping API/external request:', event.request.url);
+        // Don't call event.respondWith() - let the browser handle it normally
+        return;
     }
     
-    // Only cache static resources
+    // Only handle same-origin static resources
+    if (requestUrl.origin !== self.location.origin) {
+        return;
+    }
+    
+    // Only cache static resources from same origin
     event.respondWith(
         caches.match(event.request)
             .then(response => {
@@ -61,22 +68,18 @@ self.addEventListener('fetch', event => {
                 }
                 
                 console.log('Service Worker: Fetching from network:', event.request.url);
-                return fetch(event.request).then(response => {
-                    // Don't cache if not a successful response
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                return fetch(event.request)
+                    .then(response => {
+                        // Only cache successful responses
+                        if (response && response.status === 200 && response.type === 'basic') {
+                            const responseToCache = response.clone();
+                            caches.open(CACHE_NAME)
+                                .then(cache => {
+                                    cache.put(event.request, responseToCache);
+                                });
+                        }
                         return response;
-                    }
-                    
-                    // Clone the response
-                    const responseToCache = response.clone();
-                    
-                    caches.open(CACHE_NAME)
-                        .then(cache => {
-                            cache.put(event.request, responseToCache);
-                        });
-                    
-                    return response;
-                });
+                    });
             })
             .catch(error => {
                 console.error('Service Worker: Fetch failed:', error);
@@ -84,10 +87,10 @@ self.addEventListener('fetch', event => {
                 if (event.request.destination === 'document') {
                     return caches.match('./index.html');
                 }
-                // For other resources, just fail gracefully
-                return new Response('', {
-                    status: 408,
-                    statusText: 'Network request failed'
+                // For other resources, return a proper error response
+                return new Response('Service Worker: Resource unavailable', {
+                    status: 503,
+                    statusText: 'Service Unavailable'
                 });
             })
     );
