@@ -434,8 +434,9 @@ class KelistApp {
                         </div>
                         <div class="category-items" 
                              data-category-id="${category.id}"
-                             ondragover="app.onCategoryDragOver(event)"
-                             ondrop="app.onCategoryDrop(event)">`;
+                             ondragover="app.onContainerDragOver(event)"
+                             ondragleave="app.onCategoryDragLeave(event)"
+                             ondrop="app.onContainerDrop(event)">`;
 
                 if (sortedCategoryItems.length === 0) {
                     html += `
@@ -476,8 +477,9 @@ class KelistApp {
                     </div>
                     <div class="category-items" 
                          data-category-id=""
-                         ondragover="app.onCategoryDragOver(event)"
-                         ondrop="app.onCategoryDrop(event)">`;
+                         ondragover="app.onContainerDragOver(event)"
+                         ondragleave="app.onCategoryDragLeave(event)"
+                         ondrop="app.onContainerDrop(event)">`;
                     
             sortedUncategorized.forEach(item => {
                 html += this.renderItem(item);
@@ -504,8 +506,6 @@ class KelistApp {
                  draggable="true"
                  data-item-id="${item.id}"
                  ondragstart="app.onDragStart(event)"
-                 ondragover="app.onDragOver(event)"
-                 ondrop="app.onDrop(event)"
                  ondragend="app.onDragEnd(event)">
                 <div class="item-content">
                     <span class="drag-handle" title="Drag to reorder or move between categories">⋮⋮</span>
@@ -550,11 +550,12 @@ class KelistApp {
     }
 
     onDragOver(event) {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-        
+        // Only prevent default if we're over a valid drop target (another item)
         const itemElement = event.target.closest('.item');
         if (itemElement && itemElement.dataset.itemId !== this.draggedItemId) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            
             // Add visual indicator for drop position
             const rect = itemElement.getBoundingClientRect();
             const midY = rect.top + rect.height / 2;
@@ -566,7 +567,45 @@ class KelistApp {
                 itemElement.classList.add('drop-after');
                 itemElement.classList.remove('drop-before');
             }
+        } else {
+            // Clear any existing drop indicators if not over a valid target
+            this.clearDropIndicators();
         }
+    }
+
+    onContainerDragOver(event) {
+        const itemElement = event.target.closest('.item');
+        const categoryContainer = event.currentTarget;
+        
+        if (itemElement && itemElement.dataset.itemId !== this.draggedItemId) {
+            // Handle item-to-item reordering
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            
+            // Add visual indicator for drop position
+            const rect = itemElement.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            
+            if (event.clientY < midY) {
+                itemElement.classList.add('drop-before');
+                itemElement.classList.remove('drop-after');
+            } else {
+                itemElement.classList.add('drop-after');
+                itemElement.classList.remove('drop-before');
+            }
+            
+            // Remove category drag-over state if showing
+            categoryContainer.classList.remove('drag-over');
+        } else if (event.target.closest('.empty-category, .category-items')) {
+            // Handle dropping into empty category or empty space in category
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            categoryContainer.classList.add('drag-over');
+            
+            // Clear item drop indicators
+            this.clearDropIndicators();
+        }
+        // If not over a valid drop zone, don't preventDefault - allows scrolling
     }
 
     onDrop(event) {
@@ -588,28 +627,42 @@ class KelistApp {
         this.clearDragFeedback();
     }
 
-    onCategoryDragOver(event) {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-        
-        const categoryContainer = event.currentTarget;
-        categoryContainer.classList.add('drag-over');
-    }
-
-    onCategoryDrop(event) {
+    onContainerDrop(event) {
         event.preventDefault();
         const draggedItemId = event.dataTransfer.getData('text/plain');
+        const targetElement = event.target.closest('.item');
         const categoryContainer = event.currentTarget;
-        const targetCategoryId = categoryContainer.dataset.categoryId || null;
         
-        // Move item to end of target category
-        this.moveItemToNewCategory(draggedItemId, targetCategoryId);
+        if (targetElement && draggedItemId !== targetElement.dataset.itemId) {
+            // Drop on specific item - handle reordering
+            const targetItemId = targetElement.dataset.itemId;
+            const insertBefore = targetElement.classList.contains('drop-before');
+            const targetCategoryId = categoryContainer.dataset.categoryId || null;
+            
+            this.reorderItems(draggedItemId, targetItemId, insertBefore, targetCategoryId);
+        } else {
+            // Drop on empty category or empty space - move to end of category
+            const targetCategoryId = categoryContainer.dataset.categoryId || null;
+            this.moveItemToNewCategory(draggedItemId, targetCategoryId);
+        }
         
         categoryContainer.classList.remove('drag-over');
         this.clearDragFeedback();
     }
 
+    onCategoryDragLeave(event) {
+        // Only remove drag-over class if actually leaving the category container
+        const categoryContainer = event.currentTarget;
+        const relatedTarget = event.relatedTarget;
+        
+        // Check if we're still within the category container
+        if (!categoryContainer.contains(relatedTarget)) {
+            categoryContainer.classList.remove('drag-over');
+        }
+    }
+
     onDragEnd(event) {
+        // Always clean up drag feedback when drag ends
         this.clearDragFeedback();
     }
 
@@ -622,6 +675,12 @@ class KelistApp {
         
         this.draggedItemId = null;
         this.sourceCategoryId = null;
+    }
+
+    clearDropIndicators() {
+        // Only clear drop position indicators, not drag state
+        document.querySelectorAll('.drop-before').forEach(el => el.classList.remove('drop-before'));
+        document.querySelectorAll('.drop-after').forEach(el => el.classList.remove('drop-after'));
     }
 
     // Drag and Drop Logic
