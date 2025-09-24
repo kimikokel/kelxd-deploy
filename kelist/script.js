@@ -298,6 +298,65 @@ class KelistApp {
         }
     }
 
+    // Category Reordering
+    moveCategoryUp(categoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !currentBoard.categories) return;
+
+        const categories = currentBoard.categories;
+        const categoryIndex = categories.findIndex(c => c.id === categoryId);
+        
+        // Only move if not already at the top
+        if (categoryIndex > 0) {
+            // Swap with previous category
+            [categories[categoryIndex - 1], categories[categoryIndex]] = 
+            [categories[categoryIndex], categories[categoryIndex - 1]];
+            
+            currentBoard.updatedAt = new Date().toISOString();
+            this.saveData();
+            this.renderCurrentBoard();
+            this.highlightCategory(categoryId);
+        }
+        // If it's the first category (index 0), do nothing
+    }
+
+    moveCategoryDown(categoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !currentBoard.categories) return;
+
+        const categories = currentBoard.categories;
+        const categoryIndex = categories.findIndex(c => c.id === categoryId);
+        
+        // Only move if not already at the bottom
+        if (categoryIndex !== -1 && categoryIndex < categories.length - 1) {
+            // Swap with next category
+            [categories[categoryIndex], categories[categoryIndex + 1]] = 
+            [categories[categoryIndex + 1], categories[categoryIndex]];
+            
+            currentBoard.updatedAt = new Date().toISOString();
+            this.saveData();
+            this.renderCurrentBoard();
+            this.highlightCategory(categoryId);
+        }
+        // If it's the last category, do nothing
+    }
+
+    highlightCategory(categoryId) {
+        // Add brief highlight animation to show which category was moved
+        setTimeout(() => {
+            const categoryElement = document.querySelector(`[data-category-id="${categoryId}"]`);
+            if (categoryElement) {
+                categoryElement.style.background = 'rgba(72, 187, 120, 0.15)';
+                categoryElement.style.transform = 'scale(1.02)';
+                
+                setTimeout(() => {
+                    categoryElement.style.background = '';
+                    categoryElement.style.transform = '';
+                }, 800);
+            }
+        }, 100);
+    }
+
     // Item Management
     addItem(text, categoryId = null) {
         const currentBoard = this.getCurrentBoard();
@@ -395,9 +454,9 @@ class KelistApp {
         if (currentBoard.items.length === 0 && currentBoard.categories.length === 0) {
             itemsContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #718096;">
-                    <h3>📝 No items yet</h3>
-                    <p>Add categories and items to get organized!</p>
-                    <button class="btn-secondary" onclick="app.openCategoryModal()">+ Add Category</button>
+                    <h3 style="margin-top: 8px;">📝 No items yet</h3>
+                    <p style="margin-top: 8px;">Add categories and items to get organized!</p>
+                    <button class="btn-secondary" onclick="app.openCategoryModal()" style="margin-top: 8px;">+ Add Category</button>
                 </div>
             `;
             return;
@@ -421,6 +480,8 @@ class KelistApp {
                         <div class="category-header" style="border-left: 4px solid ${category.color}">
                             <h3 class="category-title">${category.name}</h3>
                             <div class="category-actions">
+                                <button class="btn-small btn-reorder" onclick="app.moveCategoryUp('${category.id}')" title="Move category up">⬆️</button>
+                                <button class="btn-small btn-reorder" onclick="app.moveCategoryDown('${category.id}')" title="Move category down">⬇️</button>
                                 <button class="btn-small" onclick="app.openAddItemModal('${category.id}')" title="Add item to ${category.name}">
                                     ➕ Add
                                 </button>
@@ -792,6 +853,62 @@ class KelistApp {
                 this.promptAddItem();
             }
         };
+
+        // Mobile: Setup item tap handlers for showing/hiding actions
+        this.setupMobileItemHandlers();
+
+        // Re-setup mobile handlers on window resize
+        window.addEventListener('resize', () => {
+            this.setupMobileItemHandlers();
+        });
+    }
+
+    setupMobileItemHandlers() {
+        // Remove any existing mobile handlers
+        if (this.mobileItemHandler) {
+            document.removeEventListener('click', this.mobileItemHandler);
+        }
+
+        // Only on mobile/touch devices
+        if (window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window) {
+            this.mobileItemHandler = (e) => {
+                const clickedItem = e.target.closest('.item');
+                
+                if (clickedItem) {
+                    // Don't toggle if clicking on action buttons, checkbox, or drag handle
+                    if (e.target.closest('.item-actions, .item-checkbox, .drag-handle')) {
+                        return;
+                    }
+                    
+                    // Toggle active state for this item
+                    const wasActive = clickedItem.classList.contains('show-actions');
+                    
+                    // Remove active state from all items
+                    document.querySelectorAll('.item.show-actions').forEach(item => {
+                        item.classList.remove('show-actions');
+                    });
+                    
+                    // Toggle current item (if it wasn't active before)
+                    if (!wasActive) {
+                        clickedItem.classList.add('show-actions');
+                        
+                        // Auto-hide after 5 seconds
+                        setTimeout(() => {
+                            if (clickedItem.classList.contains('show-actions')) {
+                                clickedItem.classList.remove('show-actions');
+                            }
+                        }, 5000);
+                    }
+                } else {
+                    // Click outside any item - hide all action buttons
+                    document.querySelectorAll('.item.show-actions').forEach(item => {
+                        item.classList.remove('show-actions');
+                    });
+                }
+            };
+
+            document.addEventListener('click', this.mobileItemHandler);
+        }
     }
 
     // Modal Management
