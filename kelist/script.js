@@ -20,26 +20,42 @@ class KelistApp {
     }
 
     async init() {
-        await this.loadData();
-        this.setupEventListeners();
-        this.renderBoards();
-        this.checkSyncConnection();
+        this.showLoadingScreen('Loading your boards...');
+        
+        try {
+            await this.loadData();
+            this.setupEventListeners();
+            this.renderBoards();
+            this.checkSyncConnection();
+        } catch (error) {
+            console.error('Initialization error:', error);
+            this.updateLoadingStatus('Error loading data. Using offline mode.');
+            setTimeout(() => this.hideLoadingScreen(), 1000);
+            return;
+        }
+        
+        this.hideLoadingScreen();
     }
 
     // Data Management
-    async loadData() {
+    async loadData(showStatus = true) {
+        if (showStatus) this.updateLoadingStatus('Connecting to server...');
+        
         try {
             // Try to load from server first
+            if (showStatus) this.updateLoadingStatus('Fetching your boards...');
             const response = await fetch(`${this.apiUrl}/boards`);
             if (response.ok) {
                 this.boards = await response.json();
                 this.syncEnabled = true;
+                if (showStatus) this.updateLoadingStatus('Data loaded successfully!');
                 this.showSyncStatus('✅ Synced', 'success');
             } else {
                 throw new Error('Server not available');
             }
         } catch (error) {
             // Fallback to localStorage
+            if (showStatus) this.updateLoadingStatus('Server unavailable, loading offline data...');
             const localData = localStorage.getItem('kelist-boards');
             this.boards = localData ? JSON.parse(localData) : [];
             this.syncEnabled = false;
@@ -114,6 +130,59 @@ class KelistApp {
         setTimeout(() => {
             syncStatus.classList.remove('show');
         }, 3000);
+    }
+
+    // Loading Screen Management
+    showLoadingScreen(message = 'Loading...') {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingStatus = document.getElementById('loadingStatus');
+        
+        if (loadingScreen) {
+            loadingStatus.textContent = message;
+            loadingScreen.classList.remove('hidden');
+        }
+    }
+
+    updateLoadingStatus(message) {
+        const loadingStatus = document.getElementById('loadingStatus');
+        if (loadingStatus) {
+            loadingStatus.textContent = message;
+        }
+    }
+
+    hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+            // Remove from DOM after animation
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+    }
+
+    // Refresh Functionality
+    async refreshData() {
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (!refreshBtn) return;
+
+        // Add refreshing state
+        refreshBtn.classList.add('refreshing');
+        refreshBtn.textContent = 'Refreshing...';
+
+        try {
+            await this.loadData(false);
+            this.renderBoards();
+            this.renderCurrentBoard();
+            this.showSyncStatus('✅ Data refreshed!', 'success');
+        } catch (error) {
+            console.error('Refresh failed:', error);
+            this.showSyncStatus('❌ Refresh failed', 'error');
+        } finally {
+            // Remove refreshing state
+            refreshBtn.classList.remove('refreshing');
+            refreshBtn.textContent = '🔄 Refresh';
+        }
     }
 
     // Board Management
@@ -618,6 +687,12 @@ class KelistApp {
                 this.deleteBoard(this.currentBoardId);
             }
         };
+
+        // Refresh button
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.onclick = () => this.refreshData();
+        }
 
         // Board title input
         document.getElementById('boardTitle').onblur = (e) => {

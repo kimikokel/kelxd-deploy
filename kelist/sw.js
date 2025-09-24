@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kelist-v1';
+const CACHE_NAME = 'kelist-v20250924-183042';
 const urlsToCache = [
     './',
     './index.html',
