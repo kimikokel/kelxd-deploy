@@ -497,7 +497,7 @@ header p {
     font-style: italic;
 }
 
-.uncategorised-section {
+.uncategorized-section {
     margin-bottom: 25px;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 15px;
@@ -614,6 +614,95 @@ header p {
 
 .item-actions .btn-small[title] {
     position: relative;
+}
+
+/* Drag and Drop Styles */
+.drag-handle {
+    color: #cbd5e0;
+    font-weight: bold;
+    cursor: grab;
+    user-select: none;
+    margin-right: 10px;
+    transition: color 0.2s ease;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.drag-handle:hover {
+    color: #9f7aea;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.item[draggable="true"] {
+    cursor: grab;
+}
+
+.item.dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+    z-index: 1000;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.item.drop-before {
+    border-top: 3px solid #9f7aea;
+    margin-top: 3px;
+}
+
+.item.drop-after {
+    border-bottom: 3px solid #9f7aea;
+    margin-bottom: 3px;
+}
+
+.category-items {
+    position: relative;
+    min-height: 40px;
+    transition: background-color 0.2s ease;
+}
+
+.category-items.drag-over {
+    background-color: rgba(159, 122, 234, 0.1);
+    border: 2px dashed #9f7aea;
+    border-radius: 8px;
+}
+
+.empty-category.drop-zone {
+    transition: all 0.2s ease;
+}
+
+.empty-category.drop-zone:hover,
+.category-items.drag-over .empty-category {
+    background: rgba(159, 122, 234, 0.05);
+    border-color: #9f7aea;
+    transform: scale(1.02);
+}
+
+.drop-hint {
+    font-size: 0.85rem;
+    color: #9f7aea;
+    margin: 5px 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.category-items.drag-over .drop-hint,
+.empty-category:hover .drop-hint {
+    opacity: 1;
+}
+
+/* Touch device drag support */
+@media (hover: none) and (pointer: coarse) {
+    .drag-handle {
+        font-size: 16px;
+        padding: 4px;
+    }
+    
+    .item {
+        touch-action: none;
+    }
 }
 
 /* Responsive Category Layout */

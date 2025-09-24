@@ -9,6 +9,8 @@ class KelistApp {
         this.currentEditingCategory = null;
         this.currentAddingItemCategory = null;
         this.currentMovingItem = null;
+        this.draggedItemId = null;
+        this.sourceCategoryId = null;
         this.apiUrl = window.KELIST_CONFIG?.API_URL || 'http://localhost:3000/api';
         this.syncEnabled = false;
         this.syncRetryCount = 0;
@@ -361,12 +363,16 @@ class KelistApp {
                                 </button>
                             </div>
                         </div>
-                        <div class="category-items">`;
+                        <div class="category-items" 
+                             data-category-id="${category.id}"
+                             ondragover="app.onCategoryDragOver(event)"
+                             ondrop="app.onCategoryDrop(event)">`;
 
                 if (sortedCategoryItems.length === 0) {
                     html += `
-                        <div class="empty-category">
+                        <div class="empty-category drop-zone">
                             <p>No items in this category yet</p>
+                            <p class="drop-hint">Drop items here or click to add</p>
                             <button class="btn-small" onclick="app.openAddItemModal('${category.id}')">Add First Item</button>
                         </div>`;
                 } else {
@@ -381,27 +387,30 @@ class KelistApp {
             html += '</div>';
         }
 
-        // uncategorised items
-        const uncategorisedItems = currentBoard.items.filter(item => !item.categoryId);
-        if (uncategorisedItems.length > 0) {
-            const sorteduncategorised = [...uncategorisedItems].sort((a, b) => {
+        // Uncategorized items
+        const uncategorizedItems = currentBoard.items.filter(item => !item.categoryId);
+        if (uncategorizedItems.length > 0) {
+            const sortedUncategorized = [...uncategorizedItems].sort((a, b) => {
                 if (a.completed === b.completed) return 0;
                 return a.completed ? 1 : -1;
             });
 
             html += `
-                <div class="uncategorised-section">
+                <div class="uncategorized-section">
                     <div class="category-header">
-                        <h3 class="category-title">📌 Default Category</h3>
+                        <h3 class="category-title">📌 Uncategorized</h3>
                         <div class="category-actions">
-                            <button class="btn-small" onclick="app.openAddItemModal()" title="Add uncategorised item">
+                            <button class="btn-small" onclick="app.openAddItemModal()" title="Add uncategorized item">
                                 ➕ Add
                             </button>
                         </div>
                     </div>
-                    <div class="category-items">`;
+                    <div class="category-items" 
+                         data-category-id=""
+                         ondragover="app.onCategoryDragOver(event)"
+                         ondrop="app.onCategoryDrop(event)">`;
                     
-            sorteduncategorised.forEach(item => {
+            sortedUncategorized.forEach(item => {
                 html += this.renderItem(item);
             });
 
@@ -422,8 +431,15 @@ class KelistApp {
 
     renderItem(item) {
         return `
-            <div class="item ${item.completed ? 'completed' : ''}">
+            <div class="item ${item.completed ? 'completed' : ''}" 
+                 draggable="true"
+                 data-item-id="${item.id}"
+                 ondragstart="app.onDragStart(event)"
+                 ondragover="app.onDragOver(event)"
+                 ondrop="app.onDrop(event)"
+                 ondragend="app.onDragEnd(event)">
                 <div class="item-content">
+                    <span class="drag-handle" title="Drag to reorder or move between categories">⋮⋮</span>
                     <input type="checkbox" 
                            class="item-checkbox" 
                            ${item.completed ? 'checked' : ''}
@@ -445,6 +461,147 @@ class KelistApp {
                 </div>
             </div>
         `;
+    }
+
+    // Drag and Drop Handlers
+    onDragStart(event) {
+        const itemElement = event.target.closest('.item');
+        const itemId = itemElement.dataset.itemId;
+        
+        event.dataTransfer.setData('text/plain', itemId);
+        event.dataTransfer.effectAllowed = 'move';
+        
+        // Add visual feedback
+        itemElement.classList.add('dragging');
+        this.draggedItemId = itemId;
+        
+        // Store the source category for reference
+        const categoryContainer = itemElement.closest('.category-items');
+        this.sourceCategoryId = categoryContainer ? categoryContainer.dataset.categoryId : '';
+    }
+
+    onDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        
+        const itemElement = event.target.closest('.item');
+        if (itemElement && itemElement.dataset.itemId !== this.draggedItemId) {
+            // Add visual indicator for drop position
+            const rect = itemElement.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            
+            if (event.clientY < midY) {
+                itemElement.classList.add('drop-before');
+                itemElement.classList.remove('drop-after');
+            } else {
+                itemElement.classList.add('drop-after');
+                itemElement.classList.remove('drop-before');
+            }
+        }
+    }
+
+    onDrop(event) {
+        event.preventDefault();
+        const draggedItemId = event.dataTransfer.getData('text/plain');
+        const targetElement = event.target.closest('.item');
+        
+        if (targetElement && draggedItemId !== targetElement.dataset.itemId) {
+            const targetItemId = targetElement.dataset.itemId;
+            const insertBefore = targetElement.classList.contains('drop-before');
+            
+            // Get the target category
+            const categoryContainer = targetElement.closest('.category-items');
+            const targetCategoryId = categoryContainer ? categoryContainer.dataset.categoryId : '';
+            
+            this.reorderItems(draggedItemId, targetItemId, insertBefore, targetCategoryId);
+        }
+        
+        this.clearDragFeedback();
+    }
+
+    onCategoryDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        
+        const categoryContainer = event.currentTarget;
+        categoryContainer.classList.add('drag-over');
+    }
+
+    onCategoryDrop(event) {
+        event.preventDefault();
+        const draggedItemId = event.dataTransfer.getData('text/plain');
+        const categoryContainer = event.currentTarget;
+        const targetCategoryId = categoryContainer.dataset.categoryId || null;
+        
+        // Move item to end of target category
+        this.moveItemToNewCategory(draggedItemId, targetCategoryId);
+        
+        categoryContainer.classList.remove('drag-over');
+        this.clearDragFeedback();
+    }
+
+    onDragEnd(event) {
+        this.clearDragFeedback();
+    }
+
+    clearDragFeedback() {
+        // Remove all drag-related classes
+        document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+        document.querySelectorAll('.drop-before').forEach(el => el.classList.remove('drop-before'));
+        document.querySelectorAll('.drop-after').forEach(el => el.classList.remove('drop-after'));
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        
+        this.draggedItemId = null;
+        this.sourceCategoryId = null;
+    }
+
+    // Drag and Drop Logic
+    reorderItems(draggedItemId, targetItemId, insertBefore, targetCategoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard) return;
+
+        const draggedItemIndex = currentBoard.items.findIndex(item => item.id === draggedItemId);
+        const targetItemIndex = currentBoard.items.findIndex(item => item.id === targetItemId);
+        
+        if (draggedItemIndex === -1 || targetItemIndex === -1) return;
+
+        // Remove dragged item from array
+        const draggedItem = currentBoard.items.splice(draggedItemIndex, 1)[0];
+        
+        // Update category if moving between categories
+        draggedItem.categoryId = targetCategoryId || null;
+
+        // Calculate new insertion index (accounting for removed item)
+        let newTargetIndex = targetItemIndex;
+        if (draggedItemIndex < targetItemIndex) {
+            newTargetIndex--;
+        }
+        
+        if (!insertBefore) {
+            newTargetIndex++;
+        }
+
+        // Insert at new position
+        currentBoard.items.splice(newTargetIndex, 0, draggedItem);
+        
+        currentBoard.updatedAt = new Date().toISOString();
+        this.saveData();
+        this.renderCurrentBoard();
+    }
+
+    moveItemToNewCategory(itemId, targetCategoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard) return;
+
+        const item = currentBoard.items.find(item => item.id === itemId);
+        if (!item) return;
+
+        // Update item's category
+        item.categoryId = targetCategoryId || null;
+        
+        currentBoard.updatedAt = new Date().toISOString();
+        this.saveData();
+        this.renderCurrentBoard();
     }
 
     // Event Handlers
