@@ -69,6 +69,74 @@
         </div>
     </div>
 
+    <!-- Category Modals -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Create New Category</h3>
+            <input type="text" id="categoryName" placeholder="Category name (e.g., Electronics, Clothes)" maxlength="50">
+            <div class="color-picker-group">
+                <label for="categorycolor">color:</label>
+                <input type="color" id="categorycolor" value="#E2E8F0">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmCreateCategory()">Create</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editCategoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Edit Category</h3>
+            <input type="text" id="editCategoryName" placeholder="Category name" maxlength="50">
+            <div class="color-picker-group">
+                <label for="editCategorycolor">Colour:</label>
+                <input type="color" id="editCategorycolor" value="#E2E8F0">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmEditCategory()">Save</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Add New Item</h3>
+            <input type="text" id="addItemText" placeholder="Enter item text" maxlength="100">
+            <div class="select-group">
+                <label for="addItemCategory">Category:</label>
+                <select id="addItemCategory">
+                    <option value="">uncategorised</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmAddItem()">Add Item</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="moveItemModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Move Item to Category</h3>
+            <div class="select-group">
+                <label for="moveItemCategory">Move to:</label>
+                <select id="moveItemCategory">
+                    <option value="">uncategorised</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmMoveItem()">Move</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="sync-status" id="syncStatus">
         <span id="syncIndicator">🔄 Syncing...</span>
     </div>

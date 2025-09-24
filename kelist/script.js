@@ -6,6 +6,9 @@ class KelistApp {
         this.boards = [];
         this.currentBoardId = null;
         this.currentEditingItem = null;
+        this.currentEditingCategory = null;
+        this.currentAddingItemCategory = null;
+        this.currentMovingItem = null;
         this.apiUrl = window.KELIST_CONFIG?.API_URL || 'http://localhost:3000/api';
         this.syncEnabled = false;
         this.syncRetryCount = 0;
@@ -117,6 +120,7 @@ class KelistApp {
             id: Date.now().toString(),
             title: title || 'Untitled Board',
             items: [],
+            categories: [], // New: categories array
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -162,8 +166,69 @@ class KelistApp {
         return this.boards.find(board => board.id === this.currentBoardId);
     }
 
+    // Category Management
+    addCategory(name, color = '#E2E8F0') {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !name.trim()) return;
+
+        const category = {
+            id: Date.now().toString(),
+            name: name.trim(),
+            color: color,
+            createdAt: new Date().toISOString()
+        };
+
+        if (!currentBoard.categories) {
+            currentBoard.categories = []; // Backward compatibility
+        }
+
+        currentBoard.categories.push(category);
+        currentBoard.updatedAt = new Date().toISOString();
+        this.saveData();
+        this.renderCurrentBoard();
+    }
+
+    editCategory(categoryId, newName, newcolor) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !currentBoard.categories) return;
+
+        const category = currentBoard.categories.find(c => c.id === categoryId);
+        if (category) {
+            if (newName && newName.trim()) {
+                category.name = newName.trim();
+            }
+            if (newcolor) {
+                category.color = newcolor;
+            }
+            currentBoard.updatedAt = new Date().toISOString();
+            this.saveData();
+            this.renderCurrentBoard();
+        }
+    }
+
+    deleteCategory(categoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !currentBoard.categories) return;
+
+        if (confirm('Delete this category? Items in this category will become uncategorised.')) {
+            // Remove category
+            currentBoard.categories = currentBoard.categories.filter(c => c.id !== categoryId);
+            
+            // Update items that belonged to this category
+            currentBoard.items.forEach(item => {
+                if (item.categoryId === categoryId) {
+                    delete item.categoryId;
+                }
+            });
+
+            currentBoard.updatedAt = new Date().toISOString();
+            this.saveData();
+            this.renderCurrentBoard();
+        }
+    }
+
     // Item Management
-    addItem(text) {
+    addItem(text, categoryId = null) {
         const currentBoard = this.getCurrentBoard();
         if (!currentBoard || !text.trim()) return;
 
@@ -171,6 +236,7 @@ class KelistApp {
             id: Date.now().toString(),
             text: text.trim(),
             completed: false,
+            categoryId: categoryId, // New: category assignment
             createdAt: new Date().toISOString()
         };
 
@@ -250,23 +316,112 @@ class KelistApp {
 
         boardTitle.value = currentBoard.title;
 
-        if (currentBoard.items.length === 0) {
+        // Ensure categories array exists for backward compatibility
+        if (!currentBoard.categories) {
+            currentBoard.categories = [];
+        }
+
+        if (currentBoard.items.length === 0 && currentBoard.categories.length === 0) {
             itemsContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: #718096;">
                     <h3>📝 No items yet</h3>
-                    <p>Add your first item to get started!</p>
+                    <p>Add categories and items to get organized!</p>
+                    <button class="btn-secondary" onclick="app.openCategoryModal()">+ Add Category</button>
                 </div>
             `;
             return;
         }
 
-        // Sort items: incomplete first, then completed
-        const sortedItems = [...currentBoard.items].sort((a, b) => {
-            if (a.completed === b.completed) return 0;
-            return a.completed ? 1 : -1;
-        });
+        let html = '';
 
-        itemsContainer.innerHTML = sortedItems.map(item => `
+        // Categories section
+        if (currentBoard.categories.length > 0) {
+            html += '<div class="categories-section">';
+            
+            currentBoard.categories.forEach(category => {
+                const categoryItems = currentBoard.items.filter(item => item.categoryId === category.id);
+                const sortedCategoryItems = [...categoryItems].sort((a, b) => {
+                    if (a.completed === b.completed) return 0;
+                    return a.completed ? 1 : -1;
+                });
+
+                html += `
+                    <div class="category-group" data-category-id="${category.id}">
+                        <div class="category-header" style="border-left: 4px solid ${category.color}">
+                            <h3 class="category-title">${category.name}</h3>
+                            <div class="category-actions">
+                                <button class="btn-small" onclick="app.openAddItemModal('${category.id}')" title="Add item to ${category.name}">
+                                    ➕ Add
+                                </button>
+                                <button class="btn-small" onclick="app.editCategoryPrompt('${category.id}')" title="Edit category">
+                                    ✏️
+                                </button>
+                                <button class="btn-small danger" onclick="app.deleteCategory('${category.id}')" title="Delete category">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="category-items">`;
+
+                if (sortedCategoryItems.length === 0) {
+                    html += `
+                        <div class="empty-category">
+                            <p>No items in this category yet</p>
+                            <button class="btn-small" onclick="app.openAddItemModal('${category.id}')">Add First Item</button>
+                        </div>`;
+                } else {
+                    sortedCategoryItems.forEach(item => {
+                        html += this.renderItem(item);
+                    });
+                }
+
+                html += '</div></div>';
+            });
+
+            html += '</div>';
+        }
+
+        // uncategorised items
+        const uncategorisedItems = currentBoard.items.filter(item => !item.categoryId);
+        if (uncategorisedItems.length > 0) {
+            const sorteduncategorised = [...uncategorisedItems].sort((a, b) => {
+                if (a.completed === b.completed) return 0;
+                return a.completed ? 1 : -1;
+            });
+
+            html += `
+                <div class="uncategorised-section">
+                    <div class="category-header">
+                        <h3 class="category-title">📌 Default Category</h3>
+                        <div class="category-actions">
+                            <button class="btn-small" onclick="app.openAddItemModal()" title="Add uncategorised item">
+                                ➕ Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="category-items">`;
+                    
+            sorteduncategorised.forEach(item => {
+                html += this.renderItem(item);
+            });
+
+            html += '</div></div>';
+        }
+
+        // Add category button at the bottom
+        html += `
+            <div class="add-category-section">
+                <button class="btn-secondary add-category-btn" onclick="app.openCategoryModal()">
+                    🏷️ Add New Category
+                </button>
+            </div>
+        `;
+
+        itemsContainer.innerHTML = html;
+    }
+
+    renderItem(item) {
+        return `
             <div class="item ${item.completed ? 'completed' : ''}">
                 <div class="item-content">
                     <input type="checkbox" 
@@ -277,16 +432,19 @@ class KelistApp {
                         ${item.text}
                     </span>
                     <div class="item-actions">
-                        <button class="btn-small" onclick="app.startEditItem('${item.id}')">
-                            ✏️ Edit
+                        <button class="btn-small" onclick="app.startEditItem('${item.id}')" title="Edit item">
+                            ✏️
                         </button>
-                        <button class="btn-small danger" onclick="app.deleteItem('${item.id}')">
-                            🗑️ Delete
+                        <button class="btn-small" onclick="app.moveItemToCategory('${item.id}')" title="Move to category">
+                            📁
+                        </button>
+                        <button class="btn-small danger" onclick="app.deleteItem('${item.id}')" title="Delete item">
+                            🗑️
                         </button>
                     </div>
                 </div>
             </div>
-        `).join('');
+        `;
     }
 
     // Event Handlers
@@ -359,6 +517,160 @@ class KelistApp {
         };
     }
 
+    // Category Modal Functions
+    openCategoryModal() {
+        const modal = document.getElementById('categoryModal');
+        const input = document.getElementById('categoryName');
+        const colorInput = document.getElementById('categorycolor');
+        
+        // Reset form
+        input.value = '';
+        colorInput.value = '#E2E8F0';
+        
+        modal.style.display = 'block';
+        input.focus();
+        
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                this.confirmCreateCategory();
+            }
+        };
+    }
+
+    confirmCreateCategory() {
+        const name = document.getElementById('categoryName').value.trim();
+        const color = document.getElementById('categorycolor').value;
+        
+        if (name) {
+            this.addCategory(name, color);
+            this.closeModal();
+        } else {
+            alert('Please enter a category name');
+        }
+    }
+
+    editCategoryPrompt(categoryId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard || !currentBoard.categories) return;
+
+        const category = currentBoard.categories.find(c => c.id === categoryId);
+        if (!category) return;
+
+        const modal = document.getElementById('editCategoryModal');
+        const nameInput = document.getElementById('editCategoryName');
+        const colorInput = document.getElementById('editCategorycolor');
+
+        nameInput.value = category.name;
+        colorInput.value = category.color;
+        
+        this.currentEditingCategory = categoryId;
+        modal.style.display = 'block';
+        nameInput.focus();
+        nameInput.select();
+
+        nameInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                this.confirmEditCategory();
+            }
+        };
+    }
+
+    confirmEditCategory() {
+        const newName = document.getElementById('editCategoryName').value.trim();
+        const newcolor = document.getElementById('editCategorycolor').value;
+        
+        if (newName && this.currentEditingCategory) {
+            this.editCategory(this.currentEditingCategory, newName, newcolor);
+            this.closeModal();
+        } else {
+            alert('Please enter a category name');
+        }
+    }
+
+    // Item Modal Functions
+    openAddItemModal(categoryId = null) {
+        const modal = document.getElementById('addItemModal');
+        const input = document.getElementById('addItemText');
+        const categorySelect = document.getElementById('addItemCategory');
+        
+        input.value = '';
+        this.currentAddingItemCategory = categoryId;
+        
+        // Populate category dropdown
+        this.populateCategorySelect(categorySelect, categoryId);
+        
+        modal.style.display = 'block';
+        input.focus();
+        
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                this.confirmAddItem();
+            }
+        };
+    }
+
+    populateCategorySelect(selectElement, selectedCategoryId = null) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard) return;
+
+        let options = '<option value="">uncategorised</option>';
+        
+        if (currentBoard.categories) {
+            currentBoard.categories.forEach(category => {
+                const selected = category.id === selectedCategoryId ? 'selected' : '';
+                options += `<option value="${category.id}" ${selected}>${category.name}</option>`;
+            });
+        }
+        
+        selectElement.innerHTML = options;
+    }
+
+    confirmAddItem() {
+        const text = document.getElementById('addItemText').value.trim();
+        const categoryId = document.getElementById('addItemCategory').value || null;
+        
+        if (text) {
+            this.addItem(text, categoryId);
+            this.closeModal();
+        } else {
+            alert('Please enter item text');
+        }
+    }
+
+    moveItemToCategory(itemId) {
+        const currentBoard = this.getCurrentBoard();
+        if (!currentBoard) return;
+
+        const item = currentBoard.items.find(i => i.id === itemId);
+        if (!item) return;
+
+        const modal = document.getElementById('moveItemModal');
+        const select = document.getElementById('moveItemCategory');
+        
+        this.currentMovingItem = itemId;
+        this.populateCategorySelect(select, item.categoryId);
+        
+        modal.style.display = 'block';
+    }
+
+    confirmMoveItem() {
+        const newCategoryId = document.getElementById('moveItemCategory').value || null;
+        
+        if (this.currentMovingItem) {
+            const currentBoard = this.getCurrentBoard();
+            const item = currentBoard.items.find(i => i.id === this.currentMovingItem);
+            
+            if (item) {
+                item.categoryId = newCategoryId;
+                currentBoard.updatedAt = new Date().toISOString();
+                this.saveData();
+                this.renderCurrentBoard();
+            }
+            
+            this.closeModal();
+        }
+    }
+
     confirmCreateBoard() {
         const title = document.getElementById('newBoardTitle').value.trim();
         if (title) {
@@ -411,14 +723,29 @@ class KelistApp {
         // Reset form values
         document.getElementById('newBoardTitle').value = '';
         document.getElementById('editItemText').value = '';
+        
+        // Reset category form values
+        if (document.getElementById('categoryName')) {
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categorycolor').value = '#E2E8F0';
+        }
+        if (document.getElementById('editCategoryName')) {
+            document.getElementById('editCategoryName').value = '';
+            document.getElementById('editCategorycolor').value = '#E2E8F0';
+        }
+        if (document.getElementById('addItemText')) {
+            document.getElementById('addItemText').value = '';
+        }
+        
+        // Reset current editing states
         this.currentEditingItem = null;
+        this.currentEditingCategory = null;
+        this.currentAddingItemCategory = null;
+        this.currentMovingItem = null;
     }
 
     promptAddItem() {
-        const text = prompt('Enter new item:');
-        if (text && text.trim()) {
-            this.addItem(text);
-        }
+        this.openAddItemModal();
     }
 }
 
@@ -433,6 +760,22 @@ function confirmCreateBoard() {
 
 function confirmEditItem() {
     app.confirmEditItem();
+}
+
+function confirmCreateCategory() {
+    app.confirmCreateCategory();
+}
+
+function confirmEditCategory() {
+    app.confirmEditCategory();
+}
+
+function confirmAddItem() {
+    app.confirmAddItem();
+}
+
+function confirmMoveItem() {
+    app.confirmMoveItem();
 }
 
 function closeModal() {
